@@ -3,9 +3,9 @@ from backend.snippets.grouper import group_findings
 
 findings = run_semgrep("repos/flask")
 
-groups = group_findings(findings)
+groups = group_findings(findings)   
 
 print(f"Unique Vulnerabilities: {len(groups)}")
 
 for rule, items in groups.items():
-    print(rule, len(items))
+    print(rule, len(items)) 
