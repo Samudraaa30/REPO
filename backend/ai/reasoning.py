@@ -2,32 +2,46 @@ import json
 
 from backend.api.qwen_client import QwenClient
 
-AI_URL = "YOUR_NGROK_URL"
+
+client = QwenClient()
 
 
-client = QwenClient(AI_URL)
-
-
-def explain_vulnerability(rule, snippet):
-
+def explain_vulnerability(
+    rule,
+    snippet,
+    languages,
+    frameworks,
+    repository_summary
+):
     prompt = f"""
 You are a Senior Cybersecurity Engineer.
 
-Analyze this security finding.
+Repository Information
 
-Rule:
+Languages:
+{languages}
+
+Frameworks:
+{frameworks}
+
+Repository Summary:
+{repository_summary}
+
+Semgrep Rule:
 {rule}
 
-Code:
+Representative Code:
 
 {snippet}
 
-Return ONLY valid JSON.
+Explain this finding for a CYBERSECURITY ANALYST.
+
+Return ONLY JSON.
 
 {{
 "title":"",
-"summary":"",
 "label":"",
+"summary":"",
 "severity":"",
 "risk":"",
 "owasp":"",
@@ -35,11 +49,12 @@ Return ONLY valid JSON.
 "impact":"",
 "recommendation":""
 }}
-
 """
 
     result = client.ask(prompt)
-
+    print("========== AI RESPONSE ==========")
+    print(result)
+    print("=================================")
     if "error" in result:
 
         return {

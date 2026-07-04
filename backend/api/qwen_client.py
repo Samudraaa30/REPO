@@ -1,30 +1,60 @@
+import os
 import requests
+
 
 class QwenClient:
 
-    def __init__(self, url):
-        self.url = url.rstrip("/")
+    def __init__(self):
+        self.url = "https://openrouter.ai/api/v1/chat/completions"
+        self.api_key = os.getenv("OPENROUTER_API_KEY")
 
     def ask(self, prompt):
 
-        payload = {
-            "prompt": prompt
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
         }
 
-        try:
+        payload = {
+            "model": "cohere/north-mini-code:free",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.2
+        }
 
-            response = requests.post(
-                self.url,
-                json=payload,
-                timeout=300
-            )
+        response = requests.post(
+            self.url,
+            headers=headers,
+            json=payload,
+            timeout=300
+        )
 
-            response.raise_for_status()
+        print("========== OPENROUTER ==========")
+        print(response.status_code)
+        print(response.text)
+        print("===============================")
 
-            return response.json()
+        if response.status_code != 200:
 
-        except Exception as e:
+          print(response.text)
 
-            return {
-                "error": str(e)
-            }
+          return {
+            "error": response.text
+          }
+
+        data = response.json()
+
+        return {
+            "response": data["choices"][0]["message"]["content"]
+        
+        }
+    
+        data = response.json()
+
+        return {
+            "response": data["choices"][0]["message"]["content"]
+        }

@@ -2,9 +2,7 @@ import json
 
 from backend.api.qwen_client import QwenClient
 
-AI_URL = "YOUR_NGROK_URL"
-
-client = QwenClient(AI_URL)
+client = QwenClient()
 
 
 def choose_best_snippet(rule, snippets):
@@ -47,6 +45,7 @@ Code:
 """
 
     result = client.ask(prompt)
+    print(result)
 
     if "error" in result:
 
